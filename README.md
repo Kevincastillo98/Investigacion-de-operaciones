@@ -12,6 +12,6 @@ Dentro de los algoritmos a implementar se encuentran:
 
 - **Algoritmo de costo mínimo**
 
-## Asignación 
+## Programación entera 
 
-- **Método Hungaro**
+- **Ramificación y acotamiento**
