@@ -40,7 +40,7 @@ def EsqNor(oferta, demanda, costos):
     oferta[0] = oferta[0] - matriz_asigna[0][0]
     demanda[0] = demanda[0] - matriz_asigna[0][0]
 
-    while i <= filas and j <= columnas:
+    while i < filas and j < columnas:
         if oferta[i] == 0:
             i = i+1
             matriz_asigna[i][j] = np.minimum(oferta[i], demanda[j])
@@ -59,6 +59,7 @@ def EsqNor(oferta, demanda, costos):
     #Contando número de asignasiones n+m-1
     asignasiones = (filas+columnas-1)
     asignasion_matriz = np.count_nonzero(matriz_asigna)
+    print("Tiene",asignasiones)
     if asignasiones == asignasion_matriz:
         print("El problema tiene solucion")
     else:
@@ -69,16 +70,21 @@ def EsqNor(oferta, demanda, costos):
     Z = np.sum(multiplicacion)
     print("Z:",Z)
 
-    # Calculamos precios sombre u,v
-
+    # Calculamos precios sombra u_{j},v_{i}
+    u = np.zeros(columnas)
+    u[0] = 0
+    print("U",u)
+    v = np.zeros(filas)
+    print("V",v)
+    # se usara matriz_asignada
     
 ## Ingresamos datos
 
 oferta = np.array([250,250,100])
 demanda = np.array([100,200,150,100])
 
-costos = np.array([[50, 78, 85, 20],
-                   [40, 35, 100, 90],
+costos = np.array([[50,78,85,25,20],
+                   [40,35,100,90],
                    [55,25,60,80]])
 ## Llamada a funcion
 EsqNor(oferta, demanda, costos)
