@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def EsqNor(oferta, demanda, costos):
     # Verificamos que el problema sea balanceado
     if sum(oferta) != sum(demanda):
@@ -59,15 +58,27 @@ def EsqNor(oferta, demanda, costos):
     print("Oferta:\n" ,oferta)
     #Contando número de asignasiones n+m-1
     asignasiones = (filas+columnas-1)
-    print("Numero de asignasiones:" ,asignasiones)
+    asignasion_matriz = np.count_nonzero(matriz_asigna)
+    if asignasiones == asignasion_matriz:
+        print("El problema tiene solucion")
+    else:
+        print("Problema degenerado")
+        
+    #Calculo de Z
+    multiplicacion = costos*matriz_asigna
+    Z = np.sum(multiplicacion)
+    print("Z:",Z)
 
+    # Calculamos precios sombre u,v
 
+    
+## Ingresamos datos
 
-oferta = np.array([250, 250, 100])
-demanda = np.array([100, 200, 150, 100])
+oferta = np.array([250,250,100])
+demanda = np.array([100,200,150,100])
 
-costos = np.array([[50, 78, 85, 20.],
+costos = np.array([[50, 78, 85, 20],
                    [40, 35, 100, 90],
-                   [55, 25, 60, 80]])
-
+                   [55,25,60,80]])
+## Llamada a funcion
 EsqNor(oferta, demanda, costos)
