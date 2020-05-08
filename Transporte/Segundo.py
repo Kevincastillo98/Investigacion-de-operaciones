@@ -1,19 +1,23 @@
 import  numpy as np
 
-def get_balanced_tp(supply, demand, costs, penalties = None):
-    total_supply = sum(supply)
-    total_demand = sum(demand)
+def get_balanced_tp(supply, demand, costs):
     
-    if total_supply < total_demand:
-        if penalties is None:
-            raise Exception('Supply less than demand, penalties required')
-        new_supply = supply + [total_demand - total_supply]
-        new_costs = costs + [penalties]
-        return new_supply, demand, new_costs
-    if total_supply > total_demand:
-        new_demand = demand + [total_supply - total_demand]
-        new_costs = costs + [[0 for _ in demand]]
-        return supply, new_demand, new_costs
+    if sum(supply) != sum(demand):
+        print("Problema no balanceado\n")
+        if sum(supply) > sum(demand):
+            demand.append(sum(supply)-sum(demand))
+            # Se agrega  la variable artificial como columna
+            for i in range(len(costs)):
+                costs[i].append(0)
+            print("Se balanceara\n")
+        else:
+            supply.append(sum(demand)-sum(supply))
+            # Se agrega la variable artificial como fila
+            costs.append([0]*len(costs[0]))
+            print("Se balanceara\n")
+    else:
+        print("Problema balanceado\n")
+
     return supply, demand, costs
 
 
@@ -164,13 +168,11 @@ def get_total_cost(costs, solution):
 
 
 costs = [
-    [ 2, 2, 2, 1],
-    [10, 8, 5, 4],
-    [ 7, 6, 6, 8]
-]
-supply = [30, 70, 50]
-demand = [40, 30, 40, 40]
+            [ 50, 78, 85,20],
+                [40, 35, 100, 90],
+                [55,25,60,80]]
+supply = [250,250,100]
+demand = [100,200,150,100]
 solution = transportation_simplex_method(supply, demand, costs)
 print(solution)
 print('total cost: ', get_total_cost(costs, solution))
-
