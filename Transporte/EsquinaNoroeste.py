@@ -39,20 +39,21 @@ def EsqNor(oferta, demanda, costos):
     matriz_asigna[0][0] = np.minimum(oferta[0], demanda[0])
     oferta[0] = oferta[0] - matriz_asigna[0][0]
     demanda[0] = demanda[0] - matriz_asigna[0][0]
-
-    while i < filas and j < columnas:
+    #Parara hasta tener n+m-1 iteraciones----areglar esto
+    salidas = 0
+    while salidas < (filas+columnas-1):
         if oferta[i] == 0:
             i = i+1
             matriz_asigna[i][j] = np.minimum(oferta[i], demanda[j])
-            oferta[i] = oferta[i] - matriz_asigna[i][j]
-            demanda[j] = demanda[j] - matriz_asigna[i][j]
-
-        elif demanda[j] == 0:
+            oferta[i] -= matriz_asigna[i][j]
+            demanda[j] -= matriz_asigna[i][j]
+            
+        if demanda[j] == 0:
             j = j+1
             matriz_asigna[i][j] = np.minimum(oferta[i], demanda[j])
             oferta[i] = oferta[i] - matriz_asigna[i][j]
             demanda[j] = demanda[j] - matriz_asigna[i][j]
-
+            salidas += 1
     print("Asignada:\n", matriz_asigna)
     print("Demanda:\n", demanda)
     print("Oferta:\n" ,oferta)

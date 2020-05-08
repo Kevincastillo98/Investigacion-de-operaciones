@@ -1,5 +1,8 @@
 import  numpy as np
 
+# Primero balanceamos nuestro problema, verificando que la suma de las
+# demandas sea igual a al suma de las ofertas
+
 def get_balanced_tp(supply, demand, costs):
     
     if sum(supply) != sum(demand):
@@ -18,7 +21,7 @@ def get_balanced_tp(supply, demand, costs):
     else:
         print("Problema balanceado\n")
 
-    return supply, demand, costs
+    return(supply, demand, costs)
 
 
 
@@ -28,6 +31,7 @@ def north_west_corner(supply, demand):
     i = 0
     j = 0
     bfs = []
+    # Asignasiones n+m-1 
     while len(bfs) < len(supply) + len(demand) - 1:
         s = supply_copy[i]
         d = demand_copy[j]
@@ -39,12 +43,14 @@ def north_west_corner(supply, demand):
             i += 1
         elif demand_copy[j] == 0 and j < len(demand) - 1:
             j += 1
-    return bfs
+    return(bfs)
 
-
+## Calculamos los vectores u y v 
+## sabemos que u[i] + v[j] = c[i][j]
 def get_us_and_vs(bfs, costs):
     us = [None] * len(costs)
     vs = [None] * len(costs[0])
+    # Al primer elemento u[0] = 0
     us[0] = 0
     bfs_copy = bfs.copy()
     while len(bfs_copy) > 0:
@@ -60,7 +66,7 @@ def get_us_and_vs(bfs, costs):
             bfs_copy.pop(index)
             break
             
-    return us, vs
+    return(us, vs)
 
 def get_ws(bfs, costs, us, vs):
     ws = []
