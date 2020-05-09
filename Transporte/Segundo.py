@@ -6,7 +6,7 @@ import  numpy as np
 def get_balanced_tp(supply, demand, costs):
     
     if sum(supply) != sum(demand):
-        print("Problema no balanceado\n")
+        print("Problema no balanceado")
         if sum(supply) > sum(demand):
             demand.append(sum(supply)-sum(demand))
             # Se agrega  la variable artificial como columna
@@ -18,10 +18,9 @@ def get_balanced_tp(supply, demand, costs):
             # Se agrega la variable artificial como fila
             costs.append([0]*len(costs[0]))
             print("Se balanceara\n")
-    else:
-        print("Problema balanceado\n")
-
-    return(supply, demand, costs)
+    #else:
+        #print("Problema balanceado\n")
+    return(supply,demand,costs)
 
 
 
@@ -76,9 +75,7 @@ def get_ws(bfs, costs, us, vs):
             if non_basic:
                 ws.append(((i, j), us[i] + vs[j] - cost))
     
-    return ws
-
-
+    return(ws)
 
 
 def can_be_improved(ws):
@@ -90,7 +87,7 @@ def can_be_improved(ws):
 def get_entering_variable_position(ws):
     ws_copy = ws.copy()
     ws_copy.sort(key=lambda w: w[1])
-    return ws_copy[-1][0]
+    return(ws_copy[-1][0])
 
 
 def get_possible_next_nodes(loop, not_visited):
@@ -98,12 +95,12 @@ def get_possible_next_nodes(loop, not_visited):
     nodes_in_row = [n for n in not_visited if n[0] == last_node[0]]
     nodes_in_column = [n for n in not_visited if n[1] == last_node[1]]
     if len(loop) < 2:
-        return nodes_in_row + nodes_in_column
+        return(nodes_in_row + nodes_in_column)
     else:
         prev_node = loop[-2]
         row_move = prev_node[0] == last_node[0]
         if row_move: return nodes_in_column
-        return nodes_in_row
+        return(nodes_in_row)
 
 
 
@@ -144,9 +141,22 @@ def loop_pivoting(bfs, loop):
 
 def transportation_simplex_method(supply, demand, costs, penalties = None):
     balanced_supply, balanced_demand, balanced_costs = get_balanced_tp(supply, demand, costs)
+    print("Balance:\n")
+    print("Oferta:",balanced_supply)
+    print("Demanda:",balanced_demand)
+    print("Costos:",balanced_costs,'\n')
     def inner(bfs):
+        soluciones = north_west_corner(supply, demand)
+        print("Solucion:",soluciones)
+        #Calculamos Z
+        ##Multiplilamos c[i][j] * soluciones[][]
         us, vs = get_us_and_vs(bfs, balanced_costs)
+        print("u[i]:",us)
+        print("v[j]:",vs)
         ws = get_ws(bfs, balanced_costs, us, vs)
+        print("ws[i][j]:",ws)
+        mejora = can_be_improved(ws)
+        print("¿Puede mejorar?",mejora,'\n')
         if can_be_improved(ws):
             ev_position = get_entering_variable_position(ws)
             loop = get_loop([p for p, v in bfs], ev_position)
@@ -154,11 +164,11 @@ def transportation_simplex_method(supply, demand, costs, penalties = None):
         return bfs
     
     basic_variables = inner(north_west_corner(balanced_supply, balanced_demand))
+    print("Variables basicas:",basic_variables)
     solution = np.zeros((len(costs), len(costs[0])))
     for (i, j), v in basic_variables:
         solution[i][j] = v
-
-    return solution
+    return(solution)
 
 
 
@@ -168,17 +178,19 @@ def get_total_cost(costs, solution):
     for i, row in enumerate(costs):
         for j, cost in enumerate(row):
             total_cost += cost * solution[i][j]
-    return total_cost
+    return(total_cost)
 
 
 
 
 costs = [
-            [ 50, 78, 85,20],
-                [40, 35, 100, 90],
+                [ 50,78,85,20],
+                [40,35,100, 90],
                 [55,25,60,80]]
 supply = [250,250,100]
 demand = [100,200,150,100]
+
+
 solution = transportation_simplex_method(supply, demand, costs)
-print(solution)
-print('total cost: ', get_total_cost(costs, solution))
+print("Solucion:\n",solution)
+print('Z:', get_total_cost(costs, solution))
