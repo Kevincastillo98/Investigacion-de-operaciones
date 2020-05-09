@@ -44,6 +44,13 @@ def north_west_corner(supply, demand):
             j += 1
     return(bfs)
 
+def Z_totales(bfs,costs):
+    Z_total = 0
+    for i in range(len(bfs)):
+        Z_total += (costs[bfs[i][0][0]][bfs[i][0][1]])*(bfs[i][1])
+    return(Z_total)
+
+
 ## Calculamos los vectores u y v 
 ## sabemos que u[i] + v[j] = c[i][j]
 def get_us_and_vs(bfs, costs):
@@ -139,6 +146,7 @@ def loop_pivoting(bfs, loop):
 
 
 
+
 def transportation_simplex_method(supply, demand, costs, penalties = None):
     balanced_supply, balanced_demand, balanced_costs = get_balanced_tp(supply, demand, costs)
     print("Balance:\n")
@@ -148,9 +156,9 @@ def transportation_simplex_method(supply, demand, costs, penalties = None):
     def inner(bfs):
         soluciones = north_west_corner(supply, demand)
         print("Solucion:",soluciones)
-        #Calculamos Z
-        ##Multiplilamos c[i][j] * soluciones[][]
         us, vs = get_us_and_vs(bfs, balanced_costs)
+        Z = Z_totales(bfs,balanced_costs)
+        print('Z:',Z)
         print("u[i]:",us)
         print("v[j]:",vs)
         ws = get_ws(bfs, balanced_costs, us, vs)
