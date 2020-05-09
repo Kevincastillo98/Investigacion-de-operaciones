@@ -154,8 +154,8 @@ def transportation_simplex_method(supply, demand, costs, penalties = None):
     print("Demanda:",balanced_demand)
     print("Costos:",balanced_costs,'\n')
     def inner(bfs):
-        soluciones = north_west_corner(supply, demand)
-        print("Solucion:",soluciones)
+        #soluciones = north_west_corner(balanced_supply, balanced_demand)
+        print("Variables basicas:",bfs)
         us, vs = get_us_and_vs(bfs, balanced_costs)
         Z = Z_totales(bfs,balanced_costs)
         print('Z:',Z)
@@ -192,12 +192,10 @@ def get_total_cost(costs, solution):
 
 
 costs = [
-                [ 50,78,85,20],
-                [40,35,100, 90],
-                [55,25,60,80]]
-supply = [250,250,100]
-demand = [100,200,150,100]
-
+                [ 2,6,6,2],
+                [1,2,5,7]]
+supply = [5000,3000]
+demand = [1400,3200,2000,1400]
 
 solution = transportation_simplex_method(supply, demand, costs)
 print("Solucion:\n",solution)
