@@ -191,12 +191,19 @@ def get_costo_total(costos, solucion):
 
 
 
-costos = [[5,8,6,6,3],
-         [4,7,7,6,5],
-         [8,4,6,6,4]]
-oferta = [8,5,9]
-demanda = [4,4,5,4,8]
+#costos = [[5,8,6,6,3],
+#         [4,7,7,6,5],
+#         [8,4,6,6,4]]
+#oferta = [8,5,9]
+#demanda = [4,4,5,4,8]
+oferta = [float(x) for x in input(' Introduce  las ofertas separadas por una coma: ').split(',')]
+demanda = [float(y) for y in input('Introduce las demandas separadas por una coma: ').split(',')]
 
+filas = int(input("Numero de filas:"))
+columnas = int(input("NUmero de columnas:"))
+costos=[]
+for i in range(1, filas+1):
+     costos.append(list(map(lambda j: int(input('valor:')), [ j for j in range(columnas)] )))
 solucion = metodo_transporte(oferta, demanda, costos)
 print("Solucion:\n",solucion)
 print('Z:', get_costo_total(costos, solucion))
