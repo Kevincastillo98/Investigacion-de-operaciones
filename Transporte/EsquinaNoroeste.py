@@ -203,7 +203,7 @@ filas = int(input("Numero de filas:"))
 columnas = int(input("Numero de columnas:"))
 costos=[]
 for i in range(1, filas+1):
-     costos.append(list(map(lambda j: int(input('valor:')), [ j for j in range(columnas)] )))
+     costos.append(list(map(lambda j: float(input('valor:')), [ j for j in range(columnas)] )))
 solucion = metodo_transporte(oferta, demanda, costos)
 print("Solucion:\n",solucion)
 print('Z:', obtener_costo_total(costos, solucion))
