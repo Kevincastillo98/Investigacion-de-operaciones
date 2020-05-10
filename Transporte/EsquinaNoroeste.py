@@ -3,7 +3,7 @@ import  numpy as np
 # Primero balanceamos nuestro problema, verificando que la suma de las
 # demandaas sea igual a al suma de las ofertas
 
-def get_balanceado_tp(oferta, demanda, costos):
+def obtener_balanceado_tp(oferta, demanda, costos):
     
     if sum(oferta) != sum(demanda):
         print("Problema no balanceado")
@@ -53,7 +53,7 @@ def Z_totales(bfs,costos):
 
 ## Calculamos los vectores u y v 
 ## sabemos que u[i] + v[j] = c[i][j]
-def get_us_y_vs(bfs, costos):
+def obtener_us_y_vs(bfs, costos):
     us = [None] * len(costos)
     vs = [None] * len(costos[0])
     # Al primer elemento u[0] = 0
@@ -74,7 +74,7 @@ def get_us_y_vs(bfs, costos):
             
     return(us, vs)
 
-def get_ws(bfs, costos, us, vs):
+def obtener_ws(bfs, costos, us, vs):
     ws = []
     for i, fila in enumerate(costos):
         for j, cost in enumerate(fila):
@@ -91,13 +91,13 @@ def puede_mejorar(ws):
     return False
 
 
-def get_posicion_variable_entrante(ws):
+def obtener_posicion_variable_entrante(ws):
     ws_copy = ws.copy()
     ws_copy.sort(key=lambda w: w[1])
     return(ws_copy[-1][0])
 
 
-def get_possible_next_nodes(loop, sin_visitar):
+def obtener_posible_nodo_siguiente(loop, sin_visitar):
     ultimo_nodo = loop[-1]
     nodos_en_fila = [n for n in sin_visitar if n[0] == ultimo_nodo[0]]
     nodos_en_columna = [n for n in sin_visitar if n[1] == ultimo_nodo[1]]
@@ -112,43 +112,43 @@ def get_possible_next_nodes(loop, sin_visitar):
 
 
 
-def get_loop(bv_positions, ev_position):
+def obtener_loop(bv_positions, ev_position):
     def inner(loop):
         if len(loop) > 3:
-            pueden_estar_cerca = len(get_possible_next_nodes(loop, [ev_position])) == 1
+            pueden_estar_cerca = len(obtener_posible_nodo_siguiente(loop, [ev_position])) == 1
             if pueden_estar_cerca: return loop
         
         sin_visitar = list(set(bv_positions) - set(loop))
-        possible_next_nodes = get_possible_next_nodes(loop, sin_visitar)
-        for next_node in possible_next_nodes:
-            new_loop = inner(loop + [next_node])
-            if new_loop: return new_loop
+        siguiente_nodo_posible = obtener_posible_nodo_siguiente(loop, sin_visitar)
+        for nodo_siguiente in siguiente_nodo_posible:
+            nuevo_loop = inner(loop + [nodo_siguiente])
+            if nuevo_loop: return nuevo_loop
     
     return inner([ev_position])
 
 
-def loop_pivoting(bfs, loop):
-    even_cells = loop[0::2]
-    odd_cells = loop[1::2]
-    get_bv = lambda pos: next(v for p, v in bfs if p == pos)
-    leaving_position = sorted(odd_cells, key=get_bv)[0]
-    leaving_value = get_bv(leaving_position)
+def loop_pivoteo(bfs, loop):
+    celdas_par = loop[0::2]
+    celdas_impar = loop[1::2]
+    obtener_bv = lambda pos: next(v for p, v in bfs if p == pos)
+    posicion_salida = sorted(celdas_impar, key=obtener_bv)[0]
+    valor_salida = obtener_bv(posicion_salida)
     
-    new_bfs = []
-    for p, v in [bv for bv in bfs if bv[0] != leaving_position] + [(loop[0], 0)]:
-        if p in even_cells:
-            v += leaving_value
-        elif p in odd_cells:
-            v -= leaving_value
-        new_bfs.append((p, v))
+    nuevo_bfs = []
+    for p, v in [bv for bv in bfs if bv[0] != posicion_salida] + [(loop[0], 0)]:
+        if p in celdas_par:
+            v += valor_salida
+        elif p in celdas_impar:
+            v -= valor_salida
+        nuevo_bfs.append((p, v))
         
-    return new_bfs
+    return nuevo_bfs
 
 
 
 
 def metodo_transporte(oferta, demanda, costos, penalties = None):
-    balanceado_oferta, balanceado_demanda, balanceado_costos = get_balanceado_tp(oferta, demanda, costos)
+    balanceado_oferta, balanceado_demanda, balanceado_costos = obtener_balanceado_tp(oferta, demanda, costos)
     print("Balance:\n")
     print("Oferta:",balanceado_oferta)
     print("demandaa:",balanceado_demanda)
@@ -156,19 +156,19 @@ def metodo_transporte(oferta, demanda, costos, penalties = None):
     def inner(bfs):
         #soluciones = esquina_noroeste(balanceado_oferta, balanceado_demanda)
         print("Variables basicas:",bfs)
-        us, vs = get_us_y_vs(bfs, balanceado_costos)
+        us, vs = obtener_us_y_vs(bfs, balanceado_costos)
         Z = Z_totales(bfs,balanceado_costos)
         print('Z:',Z)
         print("u[i]:",us)
         print("v[j]:",vs)
-        ws = get_ws(bfs, balanceado_costos, us, vs)
+        ws = obtener_ws(bfs, balanceado_costos, us, vs)
         print("ws[i][j]:",ws)
         mejora = puede_mejorar(ws)
         print("¿Puede mejorar?",mejora,'\n')
         if puede_mejorar(ws):
-            ev_position = get_posicion_variable_entrante(ws)
-            loop = get_loop([p for p, v in bfs], ev_position)
-            return inner(loop_pivoting(bfs, loop))
+            ev_position = obtener_posicion_variable_entrante(ws)
+            loop = obtener_loop([p for p, v in bfs], ev_position)
+            return inner(loop_pivoteo(bfs, loop))
         return bfs
     
     variables_basicas = inner(esquina_noroeste(balanceado_oferta, balanceado_demanda))
@@ -181,7 +181,7 @@ def metodo_transporte(oferta, demanda, costos, penalties = None):
 
 
 
-def get_costo_total(costos, solucion):
+def obtener_costo_total(costos, solucion):
     costo_total = 0
     for i, fila in enumerate(costos):
         for j, cost in enumerate(fila):
@@ -206,4 +206,4 @@ for i in range(1, filas+1):
      costos.append(list(map(lambda j: int(input('valor:')), [ j for j in range(columnas)] )))
 solucion = metodo_transporte(oferta, demanda, costos)
 print("Solucion:\n",solucion)
-print('Z:', get_costo_total(costos, solucion))
+print('Z:', obtener_costo_total(costos, solucion))
